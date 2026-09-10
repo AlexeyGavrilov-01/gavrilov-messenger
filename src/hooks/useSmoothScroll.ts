@@ -26,11 +26,13 @@ export function useSmoothScroll({ onScroll }: Options) {
     }
 
     const lenis = new Lenis({
-      duration: 1.25,
+      duration: 1.35,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      anchors: false,
     })
     lenisRef.current = lenis
+    ;(window as Window & { __lenis?: Lenis }).__lenis = lenis
 
     lenis.on('scroll', (e) => {
       const progress = e.progress
@@ -39,11 +41,12 @@ export function useSmoothScroll({ onScroll }: Options) {
       ScrollTrigger.update()
     })
 
+    let rafId = 0
     const raf = (time: number) => {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
     ScrollTrigger.scrollerProxy(document.body, {
       scrollTop(value) {
@@ -62,12 +65,30 @@ export function useSmoothScroll({ onScroll }: Options) {
       },
     })
 
+    const onAnchorClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null
+      const link = target?.closest('a[href^="#"]') as HTMLAnchorElement | null
+      if (!link) return
+      const hash = link.getAttribute('href')
+      if (!hash || hash === '#') return
+      const el = document.querySelector(hash)
+      if (!el) return
+      event.preventDefault()
+      lenis.scrollTo(el as HTMLElement, { offset: -24, duration: 1.45 })
+      history.replaceState(null, '', hash)
+    }
+
+    document.addEventListener('click', onAnchorClick)
+
     const onRefresh = () => lenis.resize()
     ScrollTrigger.addEventListener('refresh', onRefresh)
     ScrollTrigger.refresh()
 
     return () => {
+      cancelAnimationFrame(rafId)
+      document.removeEventListener('click', onAnchorClick)
       ScrollTrigger.removeEventListener('refresh', onRefresh)
+      delete (window as Window & { __lenis?: Lenis }).__lenis
       lenis.destroy()
       lenisRef.current = null
     }
@@ -87,6 +108,13 @@ export function useReveal() {
         onEnterBack: () => el.classList.add('is-in'),
       }),
     )
+
+    // Mark above-fold hero reveals immediately
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.hero .reveal').forEach((el) => {
+        el.classList.add('is-in')
+      })
+    })
 
     return () => {
       triggers.forEach((t) => t.kill())

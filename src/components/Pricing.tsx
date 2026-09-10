@@ -2,7 +2,7 @@ const tiers = [
   {
     tier: 'Старт',
     name: 'Визитка',
-    amount: 'от 90 000 ₽',
+    amount: 'от 90 000 ₽',
     featured: false,
     items: [
       '1–5 экранов',
@@ -14,7 +14,7 @@ const tiers = [
   {
     tier: 'Сигнал',
     name: 'Experience site',
-    amount: 'от 220 000 ₽',
+    amount: 'от 220 000 ₽',
     featured: true,
     items: [
       'Scroll-driven сцена',
@@ -26,7 +26,7 @@ const tiers = [
   {
     tier: 'Система',
     name: 'Продукт',
-    amount: 'от 450 000 ₽',
+    amount: 'от 450 000 ₽',
     featured: false,
     items: [
       'Кастомный фронт + API',
