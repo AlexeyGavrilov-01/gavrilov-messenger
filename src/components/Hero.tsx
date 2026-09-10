@@ -2,10 +2,10 @@ import { useEffect, useRef } from 'react'
 import { scrambleText } from '../lib/scramble'
 
 export function Hero() {
-  const brandRef = useRef<HTMLHeadingElement>(null)
+  const scrambleRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
-    const el = brandRef.current
+    const el = scrambleRef.current
     if (!el) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return
@@ -16,9 +16,14 @@ export function Hero() {
     <section className="hero" id="top">
       <div className="hero__inner">
         <p className="eyebrow reveal">product engineer · moscow / remote</p>
-        <h1 className="hero__brand reveal reveal-d1" ref={brandRef}>
-          alexey<span className="dot">.</span>
-          <span className="dev">dev</span>
+        <h1 className="hero__brand reveal reveal-d1">
+          <span className="hero__scramble" ref={scrambleRef} aria-hidden="true">
+            alexey.dev
+          </span>
+          <span className="hero__brand-visible">
+            alexey<span className="dot">.</span>
+            <span className="dev">dev</span>
+          </span>
         </h1>
         <div className="hero__row">
           <p className="hero__copy reveal reveal-d2">

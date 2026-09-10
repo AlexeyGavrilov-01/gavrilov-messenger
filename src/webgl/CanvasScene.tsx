@@ -279,7 +279,16 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
     let raf = 0
     let smoothProgress = 0
     let smoothVelocity = 0
+    let mouseX = 0
+    let mouseY = 0
+    let smoothMouseX = 0
+    let smoothMouseY = 0
     const clock = new THREE.Clock()
+
+    const onPointer = (e: PointerEvent) => {
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1
+      mouseY = (e.clientY / window.innerHeight) * 2 - 1
+    }
 
     const onResize = () => {
       const w = mount.clientWidth
@@ -290,6 +299,7 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
     }
     window.addEventListener('resize', onResize)
+    window.addEventListener('pointermove', onPointer)
 
     const render = () => {
       const t = clock.getElapsedTime()
@@ -297,6 +307,8 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
       const vel = velocityRef.current
       smoothProgress += (target - smoothProgress) * 0.075
       smoothVelocity += (vel - smoothVelocity) * 0.08
+      smoothMouseX += (mouseX - smoothMouseX) * 0.04
+      smoothMouseY += (mouseY - smoothMouseY) * 0.04
 
       const pMat = particles.material as THREE.ShaderMaterial
       pMat.uniforms.uTime.value = t
@@ -309,8 +321,13 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
 
       const camPos = cameraPath.getPointAt(THREE.MathUtils.clamp(smoothProgress, 0, 1))
       const look = lookPath.getPointAt(THREE.MathUtils.clamp(smoothProgress, 0, 1))
+      camPos.x += smoothMouseX * 0.55
+      camPos.y += -smoothMouseY * 0.35
+      look.x += smoothMouseX * 0.2
+      look.y += -smoothMouseY * 0.12
       camera.position.lerp(camPos, 0.12)
       camera.lookAt(look)
+      camera.rotation.z = smoothMouseX * 0.03 + smoothVelocity * 0.04
 
       shapes.forEach((shape, i) => {
         const speed = 0.15 + i * 0.04
@@ -320,6 +337,9 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
         const scale = 1 + Math.sin(t * 0.5 + i * 1.3) * 0.04 + smoothVelocity * 0.35
         shape.scale.setScalar(scale)
       })
+
+      structures.rotation.y = smoothMouseX * 0.08
+      structures.rotation.x = -smoothMouseY * 0.05
 
       grid.position.z = -smoothProgress * 8
       ;(grid.material as THREE.LineBasicMaterial).opacity = 0.03 + smoothProgress * 0.04
@@ -340,6 +360,7 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
+      window.removeEventListener('pointermove', onPointer)
       particles.geometry.dispose()
       ;(particles.material as THREE.Material).dispose()
       ribbon.geometry.dispose()

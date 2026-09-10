@@ -299,6 +299,7 @@ img {
 }
 
 .hero__brand {
+  position: relative;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(3.8rem, 14vw, 11rem);
@@ -308,12 +309,53 @@ img {
   max-width: 12ch;
 }
 
+.hero__scramble {
+  position: absolute;
+  inset: 0;
+  color: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  animation: scramble-flash 1.25s var(--ease-out) forwards;
+}
+
+.hero__brand-visible {
+  display: inline-block;
+  animation: brand-settle 1.35s var(--ease-out) 0.15s both;
+}
+
 .hero__brand .dot {
   color: var(--ember);
 }
 
 .hero__brand .dev {
   color: var(--signal);
+}
+
+@keyframes scramble-flash {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes brand-settle {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 .hero__row {
