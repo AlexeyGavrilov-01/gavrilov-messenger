@@ -183,11 +183,25 @@ export function CanvasScene({ progressRef, velocityRef }: SceneProps) {
     if (!mount) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance',
-    })
+
+    let renderer: THREE.WebGLRenderer
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+        failIfMajorPerformanceCaveat: false,
+      })
+    } catch {
+      mount.dataset.webgl = 'unavailable'
+      return
+    }
+
+    if (!renderer.getContext()) {
+      renderer.dispose()
+      mount.dataset.webgl = 'unavailable'
+      return
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75))
     renderer.setSize(mount.clientWidth, mount.clientHeight)
     renderer.setClearColor(0x000000, 0)

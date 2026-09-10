@@ -230,9 +230,9 @@ img {
   }
 
   .hero__brand {
-    font-size: clamp(2.75rem, 15vw, 4.2rem);
+    font-size: clamp(2.6rem, 13vw, 3.6rem);
     max-width: 100%;
-    word-break: break-word;
+    white-space: nowrap;
   }
 
   .hero__inner {
@@ -851,12 +851,58 @@ img {
   color: var(--signal);
 }
 
+.work:nth-child(1) .work__orb {
+  border-color: rgba(94, 224, 168, 0.35);
+}
+
+.work:nth-child(2) .work__orb {
+  border-radius: 50%;
+  transform: none;
+  animation: pulse-orb 5.5s ease-in-out infinite alternate;
+}
+
+.work:nth-child(2) .work__orb::after {
+  border-radius: 50%;
+  transform: scale(0.72);
+  border-color: rgba(232, 165, 75, 0.45);
+}
+
+.work:nth-child(3) .work__orb {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transform: none;
+  animation: drift-diamond 7s ease-in-out infinite alternate;
+}
+
+.work:nth-child(3) .work__orb::after {
+  inset: 22%;
+  transform: rotate(0deg);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
 @keyframes drift {
   from {
     transform: rotate(12deg) scale(0.96);
   }
   to {
     transform: rotate(18deg) scale(1.04);
+  }
+}
+
+@keyframes pulse-orb {
+  from {
+    transform: scale(0.92);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes drift-diamond {
+  from {
+    transform: rotate(0deg) scale(0.94);
+  }
+  to {
+    transform: rotate(12deg) scale(1.05);
   }
 }
 
