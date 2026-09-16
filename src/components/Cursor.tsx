@@ -4,15 +4,12 @@ export function Cursor() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const isTouch = window.matchMedia('(pointer: coarse)').matches
-    if (isTouch) {
+    if (window.matchMedia('(pointer: coarse)').matches) {
       document.body.classList.add('is-touch')
       return
     }
-
     const el = ref.current
     if (!el) return
-
     let x = 0
     let y = 0
     let cx = 0
@@ -25,25 +22,19 @@ export function Cursor() {
       el.classList.remove('is-hidden')
     }
     const onLeave = () => el.classList.add('is-hidden')
-
     const onOver = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
-      if (target.closest('a, button, .btn, .service, .price, .work')) {
+      if ((e.target as HTMLElement)?.closest('a, button, .btn, .service, .plan, .case')) {
         el.classList.add('is-hover')
       }
     }
     const onOut = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
-      if (target.closest('a, button, .btn, .service, .price, .work')) {
+      if ((e.target as HTMLElement)?.closest('a, button, .btn, .service, .plan, .case')) {
         el.classList.remove('is-hover')
       }
     }
-
     const loop = () => {
-      cx += (x - cx) * 0.22
-      cy += (y - cy) * 0.22
+      cx += (x - cx) * 0.2
+      cy += (y - cy) * 0.2
       el.style.transform = `translate3d(${cx - el.offsetWidth / 2}px, ${cy - el.offsetHeight / 2}px, 0)`
       raf = requestAnimationFrame(loop)
     }

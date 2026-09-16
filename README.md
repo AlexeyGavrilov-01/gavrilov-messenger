@@ -1,17 +1,16 @@
 # alexey.dev
 
-Scroll-driven визитка product engineer: услуги, цены, портфолио.
+Полностью пересобранная scroll-driven визитка product engineer.
 
 ## Stack
 
-- Vite + React + TypeScript
-- Three.js (WebGL сцена)
-- GSAP ScrollTrigger + Lenis
+Vite · React · TypeScript · Three.js · GSAP · Lenis · Sass
 
-## Scripts
+## Run
 
 ```bash
 npm install
 npm run dev
-npm run build
 ```
+
+Build: `npm run build && npm run preview`

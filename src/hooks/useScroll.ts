@@ -17,8 +17,7 @@ export function useSmoothScroll({ onScroll }: Options) {
     if (reduced) {
       const onNative = () => {
         const max = document.documentElement.scrollHeight - window.innerHeight
-        const progress = max > 0 ? window.scrollY / max : 0
-        onScroll(progress, 0)
+        onScroll(max > 0 ? window.scrollY / max : 0, 0)
       }
       window.addEventListener('scroll', onNative, { passive: true })
       onNative()
@@ -26,7 +25,7 @@ export function useSmoothScroll({ onScroll }: Options) {
     }
 
     const lenis = new Lenis({
-      duration: 1.35,
+      duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
@@ -34,9 +33,7 @@ export function useSmoothScroll({ onScroll }: Options) {
     ;(window as Window & { __lenis?: Lenis }).__lenis = lenis
 
     lenis.on('scroll', (e) => {
-      const progress = e.progress
-      const velocity = Math.abs(e.velocity)
-      onScroll(progress, Math.min(velocity / 30, 1))
+      onScroll(e.progress, Math.min(Math.abs(e.velocity) / 28, 1))
       ScrollTrigger.update()
     })
 
@@ -55,29 +52,24 @@ export function useSmoothScroll({ onScroll }: Options) {
         return lenis.scroll
       },
       getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        }
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
       },
     })
 
-    const onAnchorClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null
-      const link = target?.closest('a[href^="#"]') as HTMLAnchorElement | null
+    const onAnchor = (event: MouseEvent) => {
+      const link = (event.target as HTMLElement | null)?.closest(
+        'a[href^="#"]',
+      ) as HTMLAnchorElement | null
       if (!link) return
       const hash = link.getAttribute('href')
       if (!hash || hash === '#') return
       const el = document.querySelector(hash)
       if (!el) return
       event.preventDefault()
-      lenis.scrollTo(el as HTMLElement, { offset: -24, duration: 1.45 })
+      lenis.scrollTo(el as HTMLElement, { offset: -20, duration: 1.5 })
       history.replaceState(null, '', hash)
     }
-
-    document.addEventListener('click', onAnchorClick)
+    document.addEventListener('click', onAnchor)
 
     const onRefresh = () => lenis.resize()
     ScrollTrigger.addEventListener('refresh', onRefresh)
@@ -85,7 +77,7 @@ export function useSmoothScroll({ onScroll }: Options) {
 
     return () => {
       cancelAnimationFrame(rafId)
-      document.removeEventListener('click', onAnchorClick)
+      document.removeEventListener('click', onAnchor)
       ScrollTrigger.removeEventListener('refresh', onRefresh)
       delete (window as Window & { __lenis?: Lenis }).__lenis
       lenis.destroy()
@@ -107,16 +99,63 @@ export function useReveal() {
         onEnterBack: () => el.classList.add('is-in'),
       }),
     )
-
-    // Mark above-fold hero reveals immediately
     requestAnimationFrame(() => {
-      document.querySelectorAll('.hero .reveal').forEach((el) => {
-        el.classList.add('is-in')
-      })
+      document.querySelectorAll('.hero .reveal').forEach((el) => el.classList.add('is-in'))
+    })
+    return () => triggers.forEach((t) => t.kill())
+  }, [])
+}
+
+export function useHorizontalWork() {
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const mobile = window.matchMedia('(max-width: 860px)').matches
+    if (reduced || mobile) return
+
+    const pin = document.querySelector('.work-pin') as HTMLElement | null
+    const track = document.querySelector('.work-track') as HTMLElement | null
+    if (!pin || !track) return
+
+    const getScroll = () => Math.max(0, track.scrollWidth - window.innerWidth)
+
+    const tween = gsap.to(track, {
+      x: () => -getScroll(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: pin,
+        start: 'top top',
+        end: () => `+=${getScroll()}`,
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+      },
     })
 
+    const onResize = () => ScrollTrigger.refresh()
+    window.addEventListener('resize', onResize)
+
     return () => {
-      triggers.forEach((t) => t.kill())
+      window.removeEventListener('resize', onResize)
+      tween.scrollTrigger?.kill()
+      tween.kill()
+      gsap.set(track, { clearProps: 'transform' })
     }
   }, [])
+}
+
+export function useSectionProgress(setActive: (i: number) => void) {
+  useEffect(() => {
+    const ids = ['top', 'about', 'services', 'pricing', 'work', 'process', 'contact']
+    const triggers = ids.map((id, i) =>
+      ScrollTrigger.create({
+        trigger: id === 'top' ? '.hero' : `#${id}`,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => setActive(i),
+        onEnterBack: () => setActive(i),
+      }),
+    )
+    return () => triggers.forEach((t) => t.kill())
+  }, [setActive])
 }

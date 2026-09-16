@@ -1,56 +1,57 @@
+const skills = [
+  'React',
+  'Three.js',
+  'GSAP',
+  'TypeScript',
+  'Node',
+  'WebGL',
+  'Design Systems',
+  'Motion',
+  'React',
+  'Three.js',
+  'GSAP',
+  'TypeScript',
+  'Node',
+  'WebGL',
+  'Design Systems',
+  'Motion',
+]
+
 export function About() {
   return (
-    <section className="section" id="about">
-      <div className="section__inner split-grid">
+    <section className="chapter" id="about">
+      <div className="chapter__inner about-grid">
         <div>
-          <p className="eyebrow reveal">подход</p>
-          <h2 className="display about__title reveal reveal-d1">
-            Код как <span className="serif">архитектура сигнала</span>
+          <p className="kicker reveal">подход</p>
+          <h2 className="h-display about__title reveal d1">
+            Код как <span className="h-serif">кинематограф</span>
           </h2>
         </div>
         <div>
-          <p className="lede reveal reveal-d2">
-            Я проектирую опыт целиком: от скролл-нарратива и микроанимаций до
-            устойчивого фронтенда и бэкенда. Цель — сайт, который ведёт взгляд и
-            оставляет ощущение премиальной точности.
+          <p className="lede reveal d2">
+            Я веду продукт от идеи до релиза: сценарий скролла, интерфейс,
+            бэкенд и метрики. Цель — ощущение цельного мира, а не набор блоков.
           </p>
           <div className="about__stats">
-            <div className="reveal reveal-d2">
-              <div className="stat__value">9+</div>
-              <div className="stat__label">лет в продукте</div>
+            <div className="reveal d2">
+              <div className="stat__n">9+</div>
+              <div className="stat__l">лет в продукте</div>
             </div>
-            <div className="reveal reveal-d3">
-              <div className="stat__value">60+</div>
-              <div className="stat__label">запусков</div>
+            <div className="reveal d3">
+              <div className="stat__n">60+</div>
+              <div className="stat__l">запусков</div>
             </div>
-            <div className="reveal reveal-d4">
-              <div className="stat__value">4.9</div>
-              <div className="stat__label">средняя оценка</div>
+            <div className="reveal d4">
+              <div className="stat__n">4.9</div>
+              <div className="stat__l">средняя оценка</div>
             </div>
           </div>
         </div>
       </div>
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee__track">
-          {[
-            'React',
-            'Three.js',
-            'GSAP',
-            'Node',
-            'TypeScript',
-            'WebGL',
-            'Design Systems',
-            'Motion',
-            'React',
-            'Three.js',
-            'GSAP',
-            'Node',
-            'TypeScript',
-            'WebGL',
-            'Design Systems',
-            'Motion',
-          ].map((item, i) => (
-            <span key={`${item}-${i}`}>{item}</span>
+      <div className="ticker" aria-hidden="true">
+        <div className="ticker__track">
+          {skills.map((s, i) => (
+            <span key={`${s}-${i}`}>{s}</span>
           ))}
         </div>
       </div>

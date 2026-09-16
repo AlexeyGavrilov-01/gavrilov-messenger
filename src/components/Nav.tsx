@@ -9,9 +9,9 @@ export function Nav() {
   return (
     <header className="nav">
       <a className="nav__brand" href="#top">
-        alexey<span>.dev</span>
+        alexey<i>.dev</i>
       </a>
-      <nav aria-label="Основная навигация">
+      <nav aria-label="Навигация">
         <ul className="nav__links">
           {links.map((l) => (
             <li key={l.href}>
@@ -24,5 +24,15 @@ export function Nav() {
         Связаться
       </a>
     </header>
+  )
+}
+
+export function ProgressRail({ active }: { active: number }) {
+  return (
+    <div className="progress" aria-hidden="true">
+      {Array.from({ length: 7 }).map((_, i) => (
+        <span key={i} className={`progress__tick${i === active ? ' is-on' : ''}`} />
+      ))}
+    </div>
   )
 }

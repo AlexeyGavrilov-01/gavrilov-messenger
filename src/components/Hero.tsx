@@ -6,32 +6,30 @@ export function Hero() {
 
   useEffect(() => {
     const el = scrambleRef.current
-    if (!el) return
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduced) return
-    return scrambleText(el, 'alexey.dev', { duration: 1200 })
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    return scrambleText(el, 'alexey.dev', 1100)
   }, [])
 
   return (
     <section className="hero" id="top">
       <div className="hero__inner">
-        <p className="eyebrow reveal">product engineer · moscow / remote</p>
-        <h1 className="hero__brand reveal reveal-d1">
-          <span className="hero__scramble" ref={scrambleRef} aria-hidden="true">
-            alexey.dev
-          </span>
-          <span className="hero__brand-visible">
-            alexey<span className="dot">.</span>
-            <span className="dev">dev</span>
-          </span>
+        <p className="kicker reveal">product engineer · moscow / remote</p>
+        <h1 className="hero__title reveal d1">
+          <span
+            ref={scrambleRef}
+            aria-hidden="true"
+            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+          />
+          alexey<span className="flare">.</span>
+          <span className="volt">dev</span>
         </h1>
-        <div className="hero__row">
-          <p className="hero__copy reveal reveal-d2">
-            Собираю цифровые продукты с кинематографичной подачей: интерфейсы,
-            системы и сайты, которые ощущаются цельным миром — не набором блоков.
+        <div className="hero__bottom">
+          <p className="hero__copy reveal d2">
+            Пересобираю цифровые продукты как кинематографичные миры: сильный
+            первый кадр, точный ритм скролла и инженерия, которая держит нагрузку.
           </p>
-          <div className="hero__actions reveal reveal-d3">
-            <a className="btn btn--primary" href="#contact">
+          <div className="hero__actions reveal d3">
+            <a className="btn btn--volt" href="#contact">
               Обсудить проект
             </a>
             <a className="btn btn--ghost" href="#work">
@@ -40,10 +38,10 @@ export function Hero() {
           </div>
         </div>
       </div>
-      <p className="hero__meta">scroll-driven craft · since 2016</p>
-      <div className="scroll-hint" aria-hidden="true">
+      <p className="hero__rail">scroll narrative · est. 2016</p>
+      <div className="scroll-cue" aria-hidden="true">
         <span>scroll</span>
-        <span className="scroll-hint__line" />
+        <span className="scroll-cue__bar" />
       </div>
     </section>
   )
