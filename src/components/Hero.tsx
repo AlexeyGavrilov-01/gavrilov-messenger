@@ -1,13 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { scrambleText } from '../lib/scramble'
 
 export function Hero() {
   const scrambleRef = useRef<HTMLSpanElement>(null)
+  const [showScramble, setShowScramble] = useState(true)
 
   useEffect(() => {
     const el = scrambleRef.current
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    return scrambleText(el, 'alexey.dev', 1100)
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShowScramble(false)
+      return
+    }
+    const stop = scrambleText(el, 'alexey.dev', 1100)
+    const timer = window.setTimeout(() => setShowScramble(false), 1200)
+    return () => {
+      stop()
+      window.clearTimeout(timer)
+    }
   }, [])
 
   return (
@@ -15,13 +24,15 @@ export function Hero() {
       <div className="hero__inner">
         <p className="kicker reveal">product engineer · moscow / remote</p>
         <h1 className="hero__title reveal d1">
-          <span
-            ref={scrambleRef}
-            aria-hidden="true"
-            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
-          />
-          alexey<span className="flare">.</span>
-          <span className="volt">dev</span>
+          {showScramble && (
+            <span className="hero__scramble" ref={scrambleRef} aria-hidden="true">
+              alexey.dev
+            </span>
+          )}
+          <span className="hero__brand">
+            alexey<span className="flare">.</span>
+            <span className="volt">dev</span>
+          </span>
         </h1>
         <div className="hero__bottom">
           <p className="hero__copy reveal d2">
